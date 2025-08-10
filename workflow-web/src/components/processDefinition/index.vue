@@ -37,10 +37,17 @@
         <el-table-column prop="deploymentId" label="部署ID" align="center" width="340"/>
         <el-table-column prop="resourceName" label="资源文件名" align="center" width="340"/>
         <el-table-column prop="deploymentTime" label="部署时间" align="center" width="180"/>
-        <el-table-column prop="suspended" label="是否挂起" align="center"/>
+        <el-table-column prop="suspended" label="状态" align="center">
+          <template #default="{row}">
+            <span v-if="row.suspended===true">挂起</span>
+            <span v-if="row.suspended===false">激活</span>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" align="center">
           <template #default="{row}">
-            <el-button type="text" @click="handleToggleSuspend(row)">激活</el-button>
+            <el-button v-if="row.suspended===false" type="text" @click="handleToggleSuspend(row)">挂起</el-button>
+            <el-button v-if="row.suspended===true" type="text" @click="handleToggleSuspend(row)">激活</el-button>
+            <el-button type="text">查看流程图</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -56,7 +63,6 @@
         />
       </div>
     </el-card>
-
   </div>
 </template>
 
@@ -149,7 +155,8 @@ const toggleSuspend = async (row) => {
 
 // 激活与挂起
 const handleToggleSuspend = (row) => {
-  ElMessageBox.confirm('是否确认激活当前流程?', '激活', {
+  const status = row.suspended?'激活':'挂起';
+  ElMessageBox.confirm(`是否确认${status}当前流程?`, `${status}`, {
         confirmButtonText: '确认',
         cancelButtonText: '取消',
         type: 'warning',
