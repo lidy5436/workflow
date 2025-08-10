@@ -39,8 +39,8 @@
         <el-table-column prop="deploymentTime" label="部署时间" align="center" width="180"/>
         <el-table-column prop="suspended" label="状态" align="center">
           <template #default="{row}">
-            <span v-if="row.suspended===true">挂起</span>
-            <span v-if="row.suspended===false">激活</span>
+            <span v-if="row.suspended===true" style="color: #fb5b5b;">挂起</span>
+            <span v-if="row.suspended===false" style="color: #5aee0a;">激活</span>
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center">
@@ -65,11 +65,11 @@
     </el-card>
   </div>
   <!-- 图片弹窗 -->
-  <basic-dialog ref="basicDialogRef"/>
+  <image-dialog ref="imageDialogRef"/>
 </template>
 
 <script setup>
-import BasicDialog from '@/components/basicDialog/index.vue'
+import ImageDialog from '@/components/imageDialog/index.vue'
 import {pageApi, toggleSuspendApi} from "@/apis/processDefinition.js";
 import {onMounted, ref} from "vue";
 import {Plus, Refresh, Search} from "@element-plus/icons-vue";
@@ -170,10 +170,10 @@ const handleToggleSuspend = (row) => {
 }
 
 // 基础弹窗
-const basicDialogRef = ref(undefined)
+const imageDialogRef = ref(undefined)
 // 打开弹窗
 const handleOpenDialog = (row) => {
-  basicDialogRef.value.open(row.id)
+  imageDialogRef.value.open(row.id)
 }
 
 onMounted(() => {
