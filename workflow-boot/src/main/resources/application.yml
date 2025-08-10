@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: springboot-flowable
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://rm-bp15o58b075c1te5ddo.mysql.rds.aliyuncs.com:3306/flowable_boot?useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2b8&nullCatalogMeansCurrent=true
+    username: root
+    password: [password]
+server:
+  port: 8888
+
+flowable:
+  #关闭定时任务job
+  async-executor-activate: false
+  #对数据库表进行操作，如果表不存在则会新建
+  database-schema-update: true
