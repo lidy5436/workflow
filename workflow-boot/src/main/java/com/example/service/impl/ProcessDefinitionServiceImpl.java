@@ -102,6 +102,9 @@ public class ProcessDefinitionServiceImpl implements ProcessDefinitionService {
         if (param.getKey() != null && !param.getKey().isEmpty()) {
             query.processDefinitionKey(param.getKey());
         }
+        if (param.getDeploymentId() != null && !param.getDeploymentId().isEmpty()) {
+            query.deploymentId(param.getDeploymentId());
+        }
         if (param.getCategory() != null && !param.getCategory().isEmpty()) {
             query.processDefinitionCategory(param.getCategory());
         }
