@@ -5,10 +5,10 @@ import com.example.dto.ProcessDefinitionQueryParam;
 import com.example.dto.Result;
 import com.example.service.ProcessDefinitionService;
 import jakarta.annotation.Resource;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 /**
  * 流程定义管理
@@ -44,5 +44,12 @@ public class ProcessDefinitionController {
             return Result.error("流程定义ID不能为空");
         }
         return processDefinitionService.toggleSuspend(param);
+    }
+    /**
+     * 查看流程定义的流程图
+     */
+    @GetMapping("/processDefinition/{processId}")
+    public void viewProcessDefinitionDiagram(@PathVariable("processId") String processId, HttpServletResponse response) throws IOException {
+        processDefinitionService.viewProcessDefinitionDiagram(response,processId);
     }
 }

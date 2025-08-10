@@ -47,7 +47,7 @@
           <template #default="{row}">
             <el-button v-if="row.suspended===false" type="text" @click="handleToggleSuspend(row)">挂起</el-button>
             <el-button v-if="row.suspended===true" type="text" @click="handleToggleSuspend(row)">激活</el-button>
-            <el-button type="text">查看流程图</el-button>
+            <el-button type="text" @click="handleOpenDialog(row)">查看流程图</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -64,10 +64,12 @@
       </div>
     </el-card>
   </div>
+  <!-- 图片弹窗 -->
+  <basic-dialog ref="basicDialogRef"/>
 </template>
 
 <script setup>
-
+import BasicDialog from '@/components/basicDialog/index.vue'
 import {pageApi, toggleSuspendApi} from "@/apis/processDefinition.js";
 import {onMounted, ref} from "vue";
 import {Plus, Refresh, Search} from "@element-plus/icons-vue";
@@ -152,7 +154,6 @@ const toggleSuspend = async (row) => {
     console.error(e)
   }
 }
-
 // 激活与挂起
 const handleToggleSuspend = (row) => {
   const status = row.suspended?'激活':'挂起';
@@ -166,6 +167,13 @@ const handleToggleSuspend = (row) => {
 
   })
 
+}
+
+// 基础弹窗
+const basicDialogRef = ref(undefined)
+// 打开弹窗
+const handleOpenDialog = (row) => {
+  basicDialogRef.value.open(row.id)
 }
 
 onMounted(() => {

@@ -1,6 +1,17 @@
 package com.example.service;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.example.dto.*;
+import jakarta.servlet.http.HttpServletResponse;
+import org.flowable.bpmn.model.BpmnModel;
+import org.flowable.engine.ProcessEngineConfiguration;
+import org.flowable.engine.repository.ProcessDefinition;
+import org.flowable.image.ProcessDiagramGenerator;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
 
 /**
  * 流程定义服务接口
@@ -26,4 +37,12 @@ public interface ProcessDefinitionService {
      * @return 流程定义详情
      */
     ProcessDefinitionDTO getProcessDefinitionById(String processDefinitionId);
+
+    /**
+     * 获取流程定义的流程图
+     * @param response 结果
+     * @param processId 流程定义ID
+     * @throws IOException 异常
+     */
+    public void viewProcessDefinitionDiagram(HttpServletResponse response, String processId) throws IOException;
 }

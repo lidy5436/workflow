@@ -1,14 +1,24 @@
 package com.example.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.example.dto.*;
 import com.example.service.ProcessDefinitionService;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletResponse;
+import org.flowable.bpmn.model.BpmnModel;
+import org.flowable.engine.ProcessEngine;
+import org.flowable.engine.ProcessEngineConfiguration;
 import org.flowable.engine.RepositoryService;
 import org.flowable.engine.repository.Deployment;
 import org.flowable.engine.repository.ProcessDefinition;
 import org.flowable.engine.repository.ProcessDefinitionQuery;
+import org.flowable.image.ProcessDiagramGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,8 +28,10 @@ import java.util.List;
 @Service
 public class ProcessDefinitionServiceImpl implements ProcessDefinitionService {
 
-    @Autowired
+    @Resource
     private RepositoryService repositoryService;
+    @Resource
+    private ProcessEngine processEngine;
 
     @Override
     public PageResult<ProcessDefinitionDTO> queryProcessDefinitions(ProcessDefinitionQueryParam param) {
@@ -87,6 +99,47 @@ public class ProcessDefinitionServiceImpl implements ProcessDefinitionService {
         }
         
         return convertToDTO(definition);
+    }
+
+    @Override
+    public void viewProcessDefinitionDiagram(HttpServletResponse response, String processId) throws IOException {
+        // 设置响应内容类型
+        response.setContentType("image/png");
+        // 获取流程定义
+        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+                .processDefinitionId(processId)
+                .singleResult();
+        if (ObjectUtil.isEmpty(processDefinition)) {
+            throw new IllegalArgumentException("流程定义不存在:" + processId);
+        }
+        // 获取BPMN模型
+        BpmnModel bpmnModel = repositoryService.getBpmnModel(processId);
+        // 获取流程图生成器
+        ProcessEngineConfiguration config = processEngine.getProcessEngineConfiguration();
+        ProcessDiagramGenerator diagramGenerator = config.getProcessDiagramGenerator();
+
+        // 生成流程图输入流
+        try (OutputStream os = response.getOutputStream();
+             InputStream is = diagramGenerator.generateDiagram(
+                     bpmnModel,
+                     "png",
+                     new ArrayList<>(),
+                     new ArrayList<>(),
+                     config.getActivityFontName(),
+                     config.getLabelFontName(),
+                     config.getAnnotationFontName(),
+                     config.getClassLoader(),
+                     1.0,
+                     false
+             )) {
+            // 拷贝流
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = is.read(buffer)) != -1) {
+                os.write(buffer, 0, len);
+            }
+            os.flush();
+        }
     }
 
     /**
