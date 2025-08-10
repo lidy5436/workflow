@@ -5,7 +5,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://rm-bp15o58b075c1te5ddo.mysql.rds.aliyuncs.com:3306/flowable_boot?useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2b8&nullCatalogMeansCurrent=true
     username: root
-    password: [password]
+    password: ldy19980928!
 server:
   port: 8888
 
