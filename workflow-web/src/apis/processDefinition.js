@@ -17,3 +17,11 @@ export const toggleSuspendApi = (data) => {
         data: data
     })
 }
+// 部署流程定义
+export const processDeploymentApi = (data) => {
+    return request({
+        url: '/flowable/process-definitions/processDeployment',
+        method: 'POST',
+        data: data
+    })
+}

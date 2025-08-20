@@ -142,6 +142,14 @@ public class ProcessDefinitionServiceImpl implements ProcessDefinitionService {
         }
     }
 
+    @Override
+    public void deployProcessDeployment(ProcessDefinitionDTO processDefinitionDTO) {
+        Deployment deployment = repositoryService.createDeployment()
+                .addClasspathResource(processDefinitionDTO.getResourceName())
+                .name(processDefinitionDTO.getName())
+                .deploy();
+    }
+
     /**
      * 构建流程定义查询对象
      */

@@ -1,5 +1,5 @@
 <template>
-  <div style="padding: 20px">
+  <div style="padding: 0">
     <el-card>
       <div style="padding: 20px 0 0 0">
         <el-form :model="searchForm">
@@ -27,23 +27,23 @@
         </el-form>
       </div>
       <div style="padding: 10px 0">
-        <el-button type="primary" :icon="Plus">新增流程</el-button>
+        <el-button type="primary" :icon="Plus" @click="handleFormOpen">新增流程</el-button>
       </div>
       <el-table :data="listData" border height="550">
         <el-table-column prop="id" label="流程定义ID" align="center" width="340"/>
-        <el-table-column prop="name" label="流程名称" align="center"/>
-        <el-table-column prop="key" label="流程标识" align="center"/>
+        <el-table-column prop="name" label="流程名称" align="center" width="120"/>
+        <el-table-column prop="key" label="流程标识" align="center" width="100"/>
         <el-table-column prop="version" label="版本号" align="center" width="80"/>
         <el-table-column prop="deploymentId" label="部署ID" align="center" width="340"/>
-        <el-table-column prop="resourceName" label="资源文件名" align="center" width="340"/>
+        <el-table-column prop="resourceName" label="资源文件名" align="center" width="280"/>
         <el-table-column prop="deploymentTime" label="部署时间" align="center" width="180"/>
-        <el-table-column prop="suspended" label="状态" align="center">
+        <el-table-column prop="suspended" label="状态" align="center" width="80">
           <template #default="{row}">
             <span v-if="row.suspended===true" style="color: #fb5b5b;">挂起</span>
             <span v-if="row.suspended===false" style="color: #5aee0a;">激活</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center">
+        <el-table-column label="操作" align="center" width="180" fixed="right">
           <template #default="{row}">
             <el-button v-if="row.suspended===false" type="text" @click="handleToggleSuspend(row)">挂起</el-button>
             <el-button v-if="row.suspended===true" type="text" @click="handleToggleSuspend(row)">激活</el-button>
@@ -66,10 +66,13 @@
   </div>
   <!-- 图片弹窗 -->
   <image-dialog ref="imageDialogRef"/>
+  <!-- 新增弹窗-->
+  <form-dialog ref="formDialogRef"/>
 </template>
 
 <script setup>
 import ImageDialog from '@/components/imageDialog/index.vue'
+import formDialog from './form.vue'
 import {pageApi, toggleSuspendApi} from "@/apis/processDefinition.js";
 import {onMounted, ref} from "vue";
 import {Plus, Refresh, Search} from "@element-plus/icons-vue";
@@ -143,37 +146,44 @@ const toggleSuspend = async (row) => {
     }
     const response = await toggleSuspendApi(query);
     const res = response.data;
-    const { code, data,msg } = res;
+    const {code, data, msg} = res;
     if (code === 200) {
       ElMessage.success(data)
-    }else {
+    } else {
       ElMessage.error(msg)
     }
     await getList()
-  }catch (e) {
+  } catch (e) {
     console.error(e)
   }
 }
 // 激活与挂起
 const handleToggleSuspend = (row) => {
-  const status = row.suspended?'激活':'挂起';
+  const status = row.suspended ? '激活' : '挂起';
   ElMessageBox.confirm(`是否确认${status}当前流程?`, `${status}`, {
         confirmButtonText: '确认',
         cancelButtonText: '取消',
         type: 'warning',
       }
-  ).then(()=> {
+  ).then(() => {
     toggleSuspend(row)
 
   })
 
 }
 
-// 基础弹窗
+// 图片弹窗
 const imageDialogRef = ref(undefined)
-// 打开弹窗
+// 打开图片弹窗
 const handleOpenDialog = (row) => {
   imageDialogRef.value.open(row.id)
+}
+
+// 新增弹窗
+const formDialogRef = ref(undefined)
+// 打开新增弹窗
+const handleFormOpen = () => {
+  formDialogRef.value.open()
 }
 
 onMounted(() => {

@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.example.dto.ProcessDefinitionDTO;
 import com.example.dto.ProcessDefinitionOperateParam;
 import com.example.dto.ProcessDefinitionQueryParam;
 import com.example.dto.Result;
@@ -51,5 +52,13 @@ public class ProcessDefinitionController {
     @GetMapping("/processDefinition/{processId}")
     public void viewProcessDefinitionDiagram(@PathVariable("processId") String processId, HttpServletResponse response) throws IOException {
         processDefinitionService.viewProcessDefinitionDiagram(response,processId);
+    }
+    /**
+     * 部署流程定义
+     */
+    @PostMapping("/processDeployment")
+    public Result deployProcessDeployment(@RequestBody ProcessDefinitionDTO processDefinitionDTO) {
+        processDefinitionService.deployProcessDeployment(processDefinitionDTO);
+        return Result.success();
     }
 }

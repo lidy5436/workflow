@@ -6,17 +6,21 @@ const routes = [
     {
         path: '/',
         component: Home,
+        redirect: '/processDefinition',
         meta: {
             title: '首页',
-        }
+        },
+        children: [
+            {
+                path: '/processDefinition',
+                component: ProcessDefinition,
+                meta: {
+                    title: '流程定义'
+                }
+            }
+        ]
     },
-    {
-        path: '/processDefinition',
-        component: ProcessDefinition,
-        meta: {
-            title: '流程定义'
-        }
-    }
+
 ]
 
 const router = createRouter({

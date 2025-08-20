@@ -45,4 +45,10 @@ public interface ProcessDefinitionService {
      * @throws IOException 异常
      */
     public void viewProcessDefinitionDiagram(HttpServletResponse response, String processId) throws IOException;
+
+    /**
+     * 部署流程定义
+     * @param processDefinitionDTO 数据
+     */
+    void deployProcessDeployment(ProcessDefinitionDTO processDefinitionDTO);
 }
